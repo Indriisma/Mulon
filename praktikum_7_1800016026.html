@@ -5,8 +5,9 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width">
-    <title>Tugas praktikum 7</title>
-    <linkrel="stylesheet" href="">
+    <title>example</title>
+    <link rel="stylesheet" href="">
+
 </head>
 
 <body onload="startApp()">
@@ -14,16 +15,15 @@
     <p id="controls">
         <input type="button" id="start_button" value="Start"> &nbsp; &nbsp;
         <input type="button" id="stop_button" value="Stop">
-        <p id="msg">
-        </p>
+        <p id="msg"></p>
     </p>
-    <!--------------------------------------------------------->
+    <!-- ----------------------------------------------------- -->
     <style>
         #canvas {
             margin-left: auto;
             margin-right: auto;
             display: block;
-            background-color: rgb(50, 90, 80);
+            background-color: rgb(33, 198, 240);
         }
         
         #controls {
@@ -39,15 +39,16 @@
             text-align: center;
         }
     </style>
-    <!--------------------------------------------------------->
-    <script type="text/javascript">
-        //Hacks to deal with different function names in different browsers
+    <!-- ----------------------------------------------------- -->
 
+    <script type="text/javascript">
+        // Hacks to deal with different function names in different browsers
         window.requestAnimFrame = (function() {
             return window.requestAnimationFrame ||
                 window.webkitRequestAnimationFrame ||
                 window.mozRequestAnimationFrame ||
                 function(callback, element) {
+
                     window.setTimeout(callback, 1000 / 60);
                 };
         })();
@@ -65,7 +66,7 @@
         var audioPlaying = false;
         var sampleSize = 1024;
         var amplitudeArray;
-        var audioUrl = "Burgerkill Killchestra - An Elegy (Official Video)_c-7wzjqmgQQ.mp3";
+        var audioUrl = "Skinnyfabs - Happy.mp3";
         // Global Variables for the Graphics
         var canvasWidth = 1000;
         var canvasHeight = 450;
@@ -75,7 +76,6 @@
             var c = document.getElementById('canvas');
             c.width = canvasWidth;
             c.height = canvasHeight;
-
             ctx = c.getContext("2d");
             try {
                 audioContext = new AudioContext();
@@ -85,22 +85,24 @@
             // gather samples for the analysis, update the canvas
             var startBtn = document.getElementById('start_button');
             startBtn.onclick = function(e) {
-                    e.preventDefault();
-                    setupAudioNodes();
-                    javascriptNode.onaudioprocess = function() {
-                        analyserNode.getByteTimeDomainData(amplitudeArray);
-                        // draw the display if the audio is playing
-                        if (audioPlaying == true) {
-                            requestAnimFrame(drawTimeDomain);
-                        }
-                    }
-                    if (audioData == null) {
-                        loadSound(audioUrl);
-                    } else {
-                        playSound(audioData);
+                e.preventDefault();
+                setupAudioNodes();
+                javascriptNode.onaudioprocess = function() {
+                    analyserNode.getByteTimeDomainData(amplitudeArray);
+                    // draw the display if the audio is playing
+
+                    if (audioPlaying == true) {
+
+                        requestAnimFrame(drawTimeDomain);
                     }
                 }
-                // Stop the audio playing
+                if (audioData == null) {
+                    loadSound(audioUrl);
+                } else {
+                    playSound(audioData);
+                }
+            };
+            // Stop the audio playing
             var stopBtn = document.getElementById('stop_button');
             stopBtn.onclick = function(e) {
                 e.preventDefault();
@@ -112,7 +114,8 @@
         function setupAudioNodes() {
             sourceNode = audioContext.createBufferSource();
             analyserNode = audioContext.createAnalyser();
-            javascriptNode = audioContext.createScriptProcessor(sampleSize, 1, 1);
+            javascriptNode =
+                audioContext.createScriptProcessor(sampleSize, 1, 1);
             amplitudeArray = new
             Uint8Array(analyserNode.frequencyBinCount);
             // Now connect the nodes together
@@ -124,7 +127,7 @@
 
         function loadSound(url) {
             document.getElementById('msg').textContent = "Loading audio...";
-            var request = newXMLHttpRequest();
+            var request = new XMLHttpRequest();
             request.open('GET', url, true);
             request.responseType = 'arraybuffer';
             request.onload = function() {
@@ -132,6 +135,7 @@
                     document.getElementById('msg').textContent = "Audio sample download finished";
                     audioData = buffer;
                     playSound(audioData);
+
                 }, onError);
             }
             request.send();
